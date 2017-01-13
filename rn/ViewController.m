@@ -9,12 +9,21 @@
 #import "ViewController.h"
 #import <ReactiveObjC.h>
 #import "FlagModel.h"
+#import "TestView.h"
+#import <objc/runtime.h>
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
+
+
+
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,TestViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, strong) NSArray *dataArray;
+
+@property (nonatomic, strong) TestView *v;
+
+@property (nonatomic, strong) RACSignal *delegateSignal;
 
 @end
 
@@ -30,7 +39,7 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"loading success");
-    
+
     _dataArray = @[@"RACSignal",
                    @"RACSubject",
                    @"RACReplaySubject",
@@ -38,15 +47,31 @@
                    @"dicGetModel",
                    @"RACSequence_map",
                    @"RACCommand",
-                   @"RACMulticastConnection"
+                   @"RACMulticastConnection",
+                   @"RACDelegateProxy",
+                   @"RACKVO",
+                   @"target_action",
+                   @"RACNotification",
+                   @"textSignal",
+                   @"liftSelector_withSignalsFromArray_Signals",
+                   @"RACScheduler"
                    ];
-    
     
     [self.tableView registerNib:[UINib nibWithNibName:@"cell" bundle:nil] forHeaderFooterViewReuseIdentifier:@"cell"];
     
+    [self TestUI];
+
 }
 
-#pragma mark - ReactiveCocoa
+- (void)TestUI{
+    _v = [[TestView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(self.view.frame) - 40, 414, 40)];
+    [self.view addSubview:_v];
+    _v.delegate = self;
+}
+
+
+
+#pragma mark - ReactiveCocoa 函数式响应编程
 /*
  RACSignal
 */
@@ -331,7 +356,7 @@
         }];
     }];
     
-    //创建连接
+    //创建广播连接
     RACMulticastConnection *connect = [signal publish];
     
     //2. 订阅信号
@@ -345,7 +370,109 @@
     }];
     
     [connect connect];
+    
+}
 
+/**
+ 用来替代delegate
+ */
+- (void)RACDelegateProxy{
+    
+    if(_delegateSignal)return;
+    _delegateSignal = [self rac_signalForSelector:@selector(tap:bbb:) fromProtocol:@protocol(TestViewDelegate)];
+    [_delegateSignal subscribeNext:^(RACTuple * _Nullable x) {
+        NSLog(@"hello delegate");
+        NSLog(@"%@_____%@",x.first,x.second);
+    }];
+}
+
+
+/**
+ 替代KVO
+ param observer 是用来处理 removeObserver  使用后不用remove observer
+ */
+- (void)RACKVO{
+    [[self rac_valuesAndChangesForKeyPath:@"self.view.backgroundColor" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew observer:self] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"backgroundColor change");
+    }];
+    
+    self.view.backgroundColor = [UIColor orangeColor];
+}
+
+
+
+- (void)target_action{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"使用见TestView buttonAction" preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alert animated:YES completion:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        });
+    }];
+}
+
+
+/**
+ 使用RAC 不用手动remove
+ */
+- (void)RACNotification{
+    
+    [[[NSNotificationCenter defaultCenter] rac_addObserverForName:notificationTest object:nil] subscribeNext:^(NSNotification * _Nullable x) {
+        NSLog(@"%@",x.userInfo);
+    }];
+}
+
+
+/**
+ 监听文本框文字改变
+ */
+- (void)textSignal{
+    UITextField *text = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.v.frame), 30)];
+    [self.view addSubview:text];
+    text.backgroundColor = [UIColor  blueColor];
+    [text.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
+        if(x.length <= 0){
+            NSLog(@"clear all text");return;
+        }
+        NSLog(@"%@",x);
+    }];
+}
+
+
+/**
+ 用来处理当页面需要多次请求才渲染界面时
+ */
+- (void)liftSelector_withSignalsFromArray_Signals{
+  
+    RACSignal *s1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@"1"];
+        return nil;
+    }];
+    
+    RACSignal *s2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [subscriber sendNext:@"2"];
+        });
+        return nil;
+    }];
+    
+    //使用注意：几个信号，参数一的方法就几个参数，每个参数对应信号发出的数据。
+    NSLog(@"start___request");
+    [self rac_liftSelector:@selector(success:two:) withSignalsFromArray:@[s1,s2]];
+    
+}
+
+- (void)success:(id)data1 two:(id)data2{
+    NSLog(@"succes");
+    
+}
+
+
+/**
+ RAC 对于 GCD 的封装
+ */
+- (void)RACScheduler{
+    [RACScheduler immediateScheduler];
+    
 }
 
 

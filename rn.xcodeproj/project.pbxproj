@@ -13,6 +13,7 @@
 		0032C6D01E1E235500862FA5 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0032C6CE1E1E235500862FA5 /* Main.storyboard */; };
 		0032C6D21E1E235500862FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0032C6D11E1E235500862FA5 /* Assets.xcassets */; };
 		0032C6D51E1E235500862FA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0032C6D31E1E235500862FA5 /* LaunchScreen.storyboard */; };
+		0038E65D1E2784E200229939 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0038E65C1E2784E200229939 /* TestView.m */; };
 		00545CEB1E24D87D004F8F16 /* FlagModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00545CEA1E24D87D004F8F16 /* FlagModel.m */; };
 		70511625D87D400C662AF683 /* libPods-rn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C2EEFB589DC91FDF4A68AF /* libPods-rn.a */; };
 /* End PBXBuildFile section */
@@ -28,6 +29,8 @@
 		0032C6D11E1E235500862FA5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		0032C6D41E1E235500862FA5 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		0032C6D61E1E235500862FA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		0038E65B1E2784E200229939 /* TestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
+		0038E65C1E2784E200229939 /* TestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
 		00545CE91E24D87D004F8F16 /* FlagModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlagModel.h; sourceTree = "<group>"; };
 		00545CEA1E24D87D004F8F16 /* FlagModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlagModel.m; sourceTree = "<group>"; };
 		17F59782E2B375C617A83D1E /* Pods-rn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rn.release.xcconfig"; path = "Pods/Target Support Files/Pods-rn/Pods-rn.release.xcconfig"; sourceTree = "<group>"; };
@@ -74,6 +77,8 @@
 				0032C6CC1E1E235500862FA5 /* ViewController.m */,
 				00545CE91E24D87D004F8F16 /* FlagModel.h */,
 				00545CEA1E24D87D004F8F16 /* FlagModel.m */,
+				0038E65B1E2784E200229939 /* TestView.h */,
+				0038E65C1E2784E200229939 /* TestView.m */,
 				0032C6CE1E1E235500862FA5 /* Main.storyboard */,
 				0032C6D11E1E235500862FA5 /* Assets.xcassets */,
 				0032C6D31E1E235500862FA5 /* LaunchScreen.storyboard */,
@@ -232,6 +237,7 @@
 			files = (
 				0032C6CD1E1E235500862FA5 /* ViewController.m in Sources */,
 				00545CEB1E24D87D004F8F16 /* FlagModel.m in Sources */,
+				0038E65D1E2784E200229939 /* TestView.m in Sources */,
 				0032C6CA1E1E235500862FA5 /* AppDelegate.m in Sources */,
 				0032C6C71E1E235400862FA5 /* main.m in Sources */,
 			);
