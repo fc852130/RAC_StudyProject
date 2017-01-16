@@ -14,6 +14,9 @@
 		0032C6D21E1E235500862FA5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0032C6D11E1E235500862FA5 /* Assets.xcassets */; };
 		0032C6D51E1E235500862FA5 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 0032C6D31E1E235500862FA5 /* LaunchScreen.storyboard */; };
 		0038E65D1E2784E200229939 /* TestView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0038E65C1E2784E200229939 /* TestView.m */; };
+		004C0B551E2CA29100A187AF /* TwoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 004C0B541E2CA29100A187AF /* TwoViewController.m */; };
+		004C0B581E2CA2A100A187AF /* TwoViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 004C0B571E2CA2A100A187AF /* TwoViewModel.m */; };
+		004C0B5B1E2CA53800A187AF /* BookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 004C0B5A1E2CA53800A187AF /* BookModel.m */; };
 		00545CEB1E24D87D004F8F16 /* FlagModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00545CEA1E24D87D004F8F16 /* FlagModel.m */; };
 		70511625D87D400C662AF683 /* libPods-rn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C2EEFB589DC91FDF4A68AF /* libPods-rn.a */; };
 /* End PBXBuildFile section */
@@ -31,6 +34,12 @@
 		0032C6D61E1E235500862FA5 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0038E65B1E2784E200229939 /* TestView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestView.h; sourceTree = "<group>"; };
 		0038E65C1E2784E200229939 /* TestView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TestView.m; sourceTree = "<group>"; };
+		004C0B531E2CA29100A187AF /* TwoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoViewController.h; sourceTree = "<group>"; };
+		004C0B541E2CA29100A187AF /* TwoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoViewController.m; sourceTree = "<group>"; };
+		004C0B561E2CA2A100A187AF /* TwoViewModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TwoViewModel.h; sourceTree = "<group>"; };
+		004C0B571E2CA2A100A187AF /* TwoViewModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TwoViewModel.m; sourceTree = "<group>"; };
+		004C0B591E2CA53800A187AF /* BookModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BookModel.h; sourceTree = "<group>"; };
+		004C0B5A1E2CA53800A187AF /* BookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookModel.m; sourceTree = "<group>"; };
 		00545CE91E24D87D004F8F16 /* FlagModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlagModel.h; sourceTree = "<group>"; };
 		00545CEA1E24D87D004F8F16 /* FlagModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlagModel.m; sourceTree = "<group>"; };
 		17F59782E2B375C617A83D1E /* Pods-rn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rn.release.xcconfig"; path = "Pods/Target Support Files/Pods-rn/Pods-rn.release.xcconfig"; sourceTree = "<group>"; };
@@ -75,8 +84,14 @@
 				0032C6C91E1E235500862FA5 /* AppDelegate.m */,
 				0032C6CB1E1E235500862FA5 /* ViewController.h */,
 				0032C6CC1E1E235500862FA5 /* ViewController.m */,
+				004C0B531E2CA29100A187AF /* TwoViewController.h */,
+				004C0B541E2CA29100A187AF /* TwoViewController.m */,
+				004C0B561E2CA2A100A187AF /* TwoViewModel.h */,
+				004C0B571E2CA2A100A187AF /* TwoViewModel.m */,
 				00545CE91E24D87D004F8F16 /* FlagModel.h */,
 				00545CEA1E24D87D004F8F16 /* FlagModel.m */,
+				004C0B591E2CA53800A187AF /* BookModel.h */,
+				004C0B5A1E2CA53800A187AF /* BookModel.m */,
 				0038E65B1E2784E200229939 /* TestView.h */,
 				0038E65C1E2784E200229939 /* TestView.m */,
 				0032C6CE1E1E235500862FA5 /* Main.storyboard */,
@@ -237,9 +252,12 @@
 			files = (
 				0032C6CD1E1E235500862FA5 /* ViewController.m in Sources */,
 				00545CEB1E24D87D004F8F16 /* FlagModel.m in Sources */,
+				004C0B5B1E2CA53800A187AF /* BookModel.m in Sources */,
 				0038E65D1E2784E200229939 /* TestView.m in Sources */,
+				004C0B551E2CA29100A187AF /* TwoViewController.m in Sources */,
 				0032C6CA1E1E235500862FA5 /* AppDelegate.m in Sources */,
 				0032C6C71E1E235400862FA5 /* main.m in Sources */,
+				004C0B581E2CA2A100A187AF /* TwoViewModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -362,6 +380,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fanchuan.rn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -374,6 +393,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = fanchuan.rn;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

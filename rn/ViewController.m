@@ -11,7 +11,7 @@
 #import "FlagModel.h"
 #import "TestView.h"
 #import <objc/runtime.h>
-
+#import "TwoViewController.h"
 
 
 
@@ -54,7 +54,8 @@
                    @"RACNotification",
                    @"textSignal",
                    @"liftSelector_withSignalsFromArray_Signals",
-                   @"RACScheduler"
+                   @"RACScheduler",
+                   @"AFNetworking_RAC"
                    ];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"cell" bundle:nil] forHeaderFooterViewReuseIdentifier:@"cell"];
@@ -463,18 +464,46 @@
 
 - (void)success:(id)data1 two:(id)data2{
     NSLog(@"succes");
-    
+
 }
 
 
 /**
  RAC 对于 GCD 的封装
+ 
+ RACScheduler作为调度器,底层只是对GCD的简单封装,
+ 
+ subClass: immediateScheduler 仅仅是一个单例类，作为同步调度器
+ RACQueueScheduler 一个抽象类，在一个串行队列中实现异步调用。
+                   一般使用它的子类RACTargetQueueScheduler；
+ RACTargetQueueScheduler 继承于RACQueueScheduler，在一个串行队列中实现异步调用。
+ RACSubscriptionScheduler 一个用来调度订阅的调度器。底层生成了_backgroundScheduler，而
+                          _backgroundScheduler是通过RACTargetQueueScheduler生成的，因此RACSubscriptionScheduler 其实也是间接调用了RACTargetQueueScheduler。
  */
 - (void)RACScheduler{
+  
+    NSLog(@"GCD ==============");
+
+    //???
     [RACScheduler immediateScheduler];
     
+    //主线程
+    [RACScheduler mainThreadScheduler];
+    
+    //下列三个方法创建了一个 get_global_queue
+    [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault];
+    [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.ReactiveObjC.test"];
+    [RACScheduler scheduler];
+    
+    
+    [RACScheduler currentScheduler];
+  
 }
 
+- (void)AFNetworking_RAC{
+    TwoViewController *two = [[TwoViewController alloc] init];
+    [self.navigationController pushViewController:two animated:YES];
+}
 
 #pragma mark - tableview delegate & dataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{
