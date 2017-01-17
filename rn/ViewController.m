@@ -78,7 +78,9 @@
                    @"RACScheduler",
                    @"AFNetworking_RAC",
                    @"LoginViewController",
-                   @"Retry"
+                   @"Retry",
+                   @"throttle",
+                   @"replay"
                    ];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"cell" bundle:nil] forHeaderFooterViewReuseIdentifier:@"cell"];
@@ -109,6 +111,7 @@
         
         //2.订阅者...发送信号
         [subscriber sendNext:@"123456"];
+       
       // [subscriber sendError:nil];
         //如果不在发送信号,最好在完成时,内部会自动调用[RACDisposable disposable]取消订阅信号。
         [subscriber sendCompleted];
@@ -125,6 +128,7 @@
     [_signal subscribeNext:^(id  _Nullable x) {
         NSLog(@"收到数据%@",x);
     }];
+    
     
     [_signal subscribeError:^(NSError * _Nullable error) {
         NSLog(@"errrrrr");
@@ -569,6 +573,56 @@
     }];
     
 }
+
+
+/**
+ 节流 throttle
+ 当某个信号发送比较频繁时，可以使用节流，在某一段时间不发送信号内容，过了一段时间获取信号的最新内容发出。
+ 不接收任何信号内容，过了这个时间（1秒）获取最后发送的信号内容发出。
+ */
+- (void)throttle{
+    
+    RACSubject *subject = [RACSubject subject];
+    [[subject throttle:5] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"success");
+    }];
+    
+    NSLog(@"start");
+    [subject sendNext:@"123"];
+    
+}
+
+
+/**
+ 重复播放
+ 普通的signal也可以被多次订阅, 增加 replay 的区别在于 下列 start & remove 操作 在replay 中只会当所有订阅者都执行完成后才会被释放,而普通 signal 每次订阅都会 remove & start 操作, 在于体验 可能和 RACReplaySubject 类似
+ 
+ */
+- (void)replay{
+    RACSignal *signal = [[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+        NSLog(@"start");
+        [subscriber sendNext:@1];
+        [subscriber sendNext:@2];
+        
+        return [RACDisposable disposableWithBlock:^{
+            NSLog(@"remove");
+        }];
+    }] replay];
+    
+    [signal subscribeNext:^(id x) {
+        
+        NSLog(@"第一个订阅者%@",x);
+        
+    }];
+    
+    [signal subscribeNext:^(id x) {
+        
+        NSLog(@"第二个订阅者%@",x);
+        
+    }];
+}
+
+
 
 
 #pragma mark - tableview delegate & dataSource
