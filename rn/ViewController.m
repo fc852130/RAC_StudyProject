@@ -12,7 +12,7 @@
 #import "TestView.h"
 #import <objc/runtime.h>
 #import "TwoViewController.h"
-
+#import "LoginViewController.h"
 
 
 @interface ViewController ()<UITableViewDelegate,UITableViewDataSource,TestViewDelegate>
@@ -36,6 +36,27 @@
  订阅信号:subscribeNext
 */
 
+
+/**
+ 常用 宏
+ */
+- (void)macro{
+    //给某个对象的特定属性绑定信号,随信号而动.
+    RAC(self.view,backgroundColor) = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@"1"];
+        [subscriber sendCompleted];
+        return nil;
+    }];
+    
+    //监听某个对象的某个属性,返回值是对象
+    [RACObserve(self.v, backgroundColor) subscribeNext:^(id  _Nullable x) {
+        
+    }];
+    
+    
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"loading success");
@@ -55,7 +76,9 @@
                    @"textSignal",
                    @"liftSelector_withSignalsFromArray_Signals",
                    @"RACScheduler",
-                   @"AFNetworking_RAC"
+                   @"AFNetworking_RAC",
+                   @"LoginViewController",
+                   @"Retry"
                    ];
     
     [self.tableView registerNib:[UINib nibWithNibName:@"cell" bundle:nil] forHeaderFooterViewReuseIdentifier:@"cell"];
@@ -504,6 +527,49 @@
     TwoViewController *two = [[TwoViewController alloc] init];
     [self.navigationController pushViewController:two animated:YES];
 }
+
+- (void)LoginViewController{
+    
+   UIStoryboard *stroyboard =   [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    
+  LoginViewController *loginVC = [stroyboard instantiateViewControllerWithIdentifier:@"LoginVC"];
+ 
+   [self.navigationController pushViewController:loginVC animated:YES];
+}
+
+
+/**
+ 重复操作
+ */
+- (void)Retry{
+    
+  __block  int i = 0;
+    
+  RACSignal *s =  [[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+      NSLog(@"start======%d",i);
+        if(i >= 10){
+            [subscriber sendNext:@1];
+        }else{
+            [subscriber sendError:[[NSError alloc] initWithDomain:@"1" code:1000 userInfo:nil]];
+        }
+        i++;
+      [subscriber sendCompleted];
+      
+        return [RACDisposable disposableWithBlock:^{
+            NSLog(@"RACDisposable");
+        }];
+    }] retry];
+
+    [s subscribeNext:^(id  _Nullable x) {
+        NSLog(@"%@",x);
+    } error:^(NSError * _Nullable error) {
+        NSLog(@"err");
+    }];
+    
+    
+}
+
+
 
 #pragma mark - tableview delegate & dataSource
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section{

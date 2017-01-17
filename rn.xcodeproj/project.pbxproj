@@ -18,6 +18,8 @@
 		004C0B581E2CA2A100A187AF /* TwoViewModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 004C0B571E2CA2A100A187AF /* TwoViewModel.m */; };
 		004C0B5B1E2CA53800A187AF /* BookModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 004C0B5A1E2CA53800A187AF /* BookModel.m */; };
 		00545CEB1E24D87D004F8F16 /* FlagModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 00545CEA1E24D87D004F8F16 /* FlagModel.m */; };
+		006EA71A1E2DB38900C47C70 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 006EA7191E2DB38900C47C70 /* LoginViewController.m */; };
+		006EA71D1E2DB56100C47C70 /* LoginModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 006EA71C1E2DB56100C47C70 /* LoginModel.m */; };
 		70511625D87D400C662AF683 /* libPods-rn.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 93C2EEFB589DC91FDF4A68AF /* libPods-rn.a */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +44,10 @@
 		004C0B5A1E2CA53800A187AF /* BookModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BookModel.m; sourceTree = "<group>"; };
 		00545CE91E24D87D004F8F16 /* FlagModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlagModel.h; sourceTree = "<group>"; };
 		00545CEA1E24D87D004F8F16 /* FlagModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FlagModel.m; sourceTree = "<group>"; };
+		006EA7181E2DB38900C47C70 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		006EA7191E2DB38900C47C70 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		006EA71B1E2DB56100C47C70 /* LoginModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginModel.h; sourceTree = "<group>"; };
+		006EA71C1E2DB56100C47C70 /* LoginModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginModel.m; sourceTree = "<group>"; };
 		17F59782E2B375C617A83D1E /* Pods-rn.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rn.release.xcconfig"; path = "Pods/Target Support Files/Pods-rn/Pods-rn.release.xcconfig"; sourceTree = "<group>"; };
 		93C2EEFB589DC91FDF4A68AF /* libPods-rn.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-rn.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		99E812FBA7E330FBA0F474F1 /* Pods-rn.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-rn.debug.xcconfig"; path = "Pods/Target Support Files/Pods-rn/Pods-rn.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,6 +94,10 @@
 				004C0B541E2CA29100A187AF /* TwoViewController.m */,
 				004C0B561E2CA2A100A187AF /* TwoViewModel.h */,
 				004C0B571E2CA2A100A187AF /* TwoViewModel.m */,
+				006EA7181E2DB38900C47C70 /* LoginViewController.h */,
+				006EA7191E2DB38900C47C70 /* LoginViewController.m */,
+				006EA71B1E2DB56100C47C70 /* LoginModel.h */,
+				006EA71C1E2DB56100C47C70 /* LoginModel.m */,
 				00545CE91E24D87D004F8F16 /* FlagModel.h */,
 				00545CEA1E24D87D004F8F16 /* FlagModel.m */,
 				004C0B591E2CA53800A187AF /* BookModel.h */,
@@ -255,9 +265,11 @@
 				004C0B5B1E2CA53800A187AF /* BookModel.m in Sources */,
 				0038E65D1E2784E200229939 /* TestView.m in Sources */,
 				004C0B551E2CA29100A187AF /* TwoViewController.m in Sources */,
+				006EA71A1E2DB38900C47C70 /* LoginViewController.m in Sources */,
 				0032C6CA1E1E235500862FA5 /* AppDelegate.m in Sources */,
 				0032C6C71E1E235400862FA5 /* main.m in Sources */,
 				004C0B581E2CA2A100A187AF /* TwoViewModel.m in Sources */,
+				006EA71D1E2DB56100C47C70 /* LoginModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
