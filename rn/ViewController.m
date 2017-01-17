@@ -100,7 +100,7 @@
  RACSignal
 */
 - (void)RACSignal{
-    //Simple user
+    //Simple use
     //1.创建信号源
    RACSignal *_signal =  [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         NSLog(@"发送信号");
@@ -109,7 +109,7 @@
         
         //2.订阅者...发送信号
         [subscriber sendNext:@"123456"];
-        
+      // [subscriber sendError:nil];
         //如果不在发送信号,最好在完成时,内部会自动调用[RACDisposable disposable]取消订阅信号。
         [subscriber sendCompleted];
         
@@ -124,6 +124,10 @@
     //3. 订阅信号
     [_signal subscribeNext:^(id  _Nullable x) {
         NSLog(@"收到数据%@",x);
+    }];
+    
+    [_signal subscribeError:^(NSError * _Nullable error) {
+        NSLog(@"errrrrr");
     }];
 }
 
@@ -543,32 +547,28 @@
  */
 - (void)Retry{
     
-  __block  int i = 0;
-    
-  RACSignal *s =  [[RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
-      NSLog(@"start======%d",i);
-        if(i >= 10){
-            [subscriber sendNext:@1];
-        }else{
-            [subscriber sendError:[[NSError alloc] initWithDomain:@"1" code:1000 userInfo:nil]];
+    __block int failedCount = 0;
+    //创建信号
+    RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id subscriber) {
+        if (failedCount < 10) {
+            failedCount++;
+            NSLog(@"我失败了");
+            //发送错误，才会要重试
+            [subscriber sendError:nil];
+        } else {
+            NSLog(@"经历了数百次失败后");
+            [subscriber sendNext:nil];
         }
-        i++;
-      [subscriber sendCompleted];
-      
-        return [RACDisposable disposableWithBlock:^{
-            NSLog(@"RACDisposable");
-        }];
-    }] retry];
-
-    [s subscribeNext:^(id  _Nullable x) {
-        NSLog(@"%@",x);
-    } error:^(NSError * _Nullable error) {
-        NSLog(@"err");
+        return nil;
+    }];
+    //重试
+    RACSignal *retrySignal = [signal retry];
+    //直到发送了Next玻璃球
+    [retrySignal subscribeNext:^(id x) {
+        NSLog(@"终于成功了");
     }];
     
-    
 }
-
 
 
 #pragma mark - tableview delegate & dataSource
