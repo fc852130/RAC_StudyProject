@@ -9,12 +9,21 @@
 #import "ViewController.h"
 #import <ReactiveObjC.h>
 #import "FlagModel.h"
+#import "TestView.h"
+#import <objc/runtime.h>
+#import "TwoViewController.h"
+#import "LoginViewController.h"
 
-@interface ViewController ()<UITableViewDelegate,UITableViewDataSource>
+
+@interface ViewController ()<UITableViewDelegate,UITableViewDataSource,TestViewDelegate>
 
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 
 @property (nonatomic, strong) NSArray *dataArray;
+
+@property (nonatomic, strong) TestView *v;
+
+@property (nonatomic, strong) RACSignal *delegateSignal;
 
 @end
 
@@ -27,10 +36,31 @@
  订阅信号:subscribeNext
 */
 
+
+/**
+ 常用 宏
+ */
+- (void)macro{
+    //给某个对象的特定属性绑定信号,随信号而动.
+    RAC(self.view,backgroundColor) = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@"1"];
+        [subscriber sendCompleted];
+        return nil;
+    }];
+    
+    //监听某个对象的某个属性,返回值是对象
+    [RACObserve(self.v, backgroundColor) subscribeNext:^(id  _Nullable x) {
+        
+    }];
+    
+    
+    
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     NSLog(@"loading success");
-    
+
     _dataArray = @[@"RACSignal",
                    @"RACSubject",
                    @"RACReplaySubject",
@@ -38,20 +68,41 @@
                    @"dicGetModel",
                    @"RACSequence_map",
                    @"RACCommand",
-                   @"RACMulticastConnection"
+                   @"RACMulticastConnection",
+                   @"RACDelegateProxy",
+                   @"RACKVO",
+                   @"target_action",
+                   @"RACNotification",
+                   @"textSignal",
+                   @"liftSelector_withSignalsFromArray_Signals",
+                   @"RACScheduler",
+                   @"AFNetworking_RAC",
+                   @"LoginViewController",
+                   @"Retry",
+                   @"throttle",
+                   @"replay"
                    ];
-    
     
     [self.tableView registerNib:[UINib nibWithNibName:@"cell" bundle:nil] forHeaderFooterViewReuseIdentifier:@"cell"];
     
+    [self TestUI];
+
 }
 
-#pragma mark - ReactiveCocoa
+- (void)TestUI{
+    _v = [[TestView alloc] initWithFrame:CGRectMake(0,CGRectGetMaxY(self.view.frame) - 40, 414, 40)];
+    [self.view addSubview:_v];
+    _v.delegate = self;
+}
+
+
+
+#pragma mark - ReactiveCocoa 函数式响应编程
 /*
  RACSignal
 */
 - (void)RACSignal{
-    //Simple user
+    //Simple use
     //1.创建信号源
    RACSignal *_signal =  [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
         NSLog(@"发送信号");
@@ -60,7 +111,8 @@
         
         //2.订阅者...发送信号
         [subscriber sendNext:@"123456"];
-        
+       
+      // [subscriber sendError:nil];
         //如果不在发送信号,最好在完成时,内部会自动调用[RACDisposable disposable]取消订阅信号。
         [subscriber sendCompleted];
         
@@ -75,6 +127,11 @@
     //3. 订阅信号
     [_signal subscribeNext:^(id  _Nullable x) {
         NSLog(@"收到数据%@",x);
+    }];
+    
+    
+    [_signal subscribeError:^(NSError * _Nullable error) {
+        NSLog(@"errrrrr");
     }];
 }
 
@@ -331,7 +388,7 @@
         }];
     }];
     
-    //创建连接
+    //创建广播连接
     RACMulticastConnection *connect = [signal publish];
     
     //2. 订阅信号
@@ -345,8 +402,227 @@
     }];
     
     [connect connect];
+    
+}
+
+/**
+ 用来替代delegate
+ */
+- (void)RACDelegateProxy{
+    
+    if(_delegateSignal)return;
+    _delegateSignal = [self rac_signalForSelector:@selector(tap:bbb:) fromProtocol:@protocol(TestViewDelegate)];
+    [_delegateSignal subscribeNext:^(RACTuple * _Nullable x) {
+        NSLog(@"hello delegate");
+        NSLog(@"%@_____%@",x.first,x.second);
+    }];
+}
+
+
+/**
+ 替代KVO
+ param observer 是用来处理 removeObserver  使用后不用remove observer
+ */
+- (void)RACKVO{
+    [[self rac_valuesAndChangesForKeyPath:@"self.view.backgroundColor" options:NSKeyValueObservingOptionOld | NSKeyValueObservingOptionNew observer:self] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"backgroundColor change");
+    }];
+    
+    self.view.backgroundColor = [UIColor orangeColor];
+}
+
+
+
+- (void)target_action{
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:nil message:@"使用见TestView buttonAction" preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alert animated:YES completion:^{
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [alert dismissViewControllerAnimated:YES completion:nil];
+        });
+    }];
+}
+
+
+/**
+ 使用RAC 不用手动remove
+ */
+- (void)RACNotification{
+    
+    [[[NSNotificationCenter defaultCenter] rac_addObserverForName:notificationTest object:nil] subscribeNext:^(NSNotification * _Nullable x) {
+        NSLog(@"%@",x.userInfo);
+    }];
+}
+
+
+/**
+ 监听文本框文字改变
+ */
+- (void)textSignal{
+    UITextField *text = [[UITextField alloc] initWithFrame:CGRectMake(0, 0, CGRectGetWidth(self.v.frame), 30)];
+    [self.view addSubview:text];
+    text.backgroundColor = [UIColor  blueColor];
+    [text.rac_textSignal subscribeNext:^(NSString * _Nullable x) {
+        if(x.length <= 0){
+            NSLog(@"clear all text");return;
+        }
+        NSLog(@"%@",x);
+    }];
+}
+
+
+/**
+ 用来处理当页面需要多次请求才渲染界面时
+ */
+- (void)liftSelector_withSignalsFromArray_Signals{
+  
+    RACSignal *s1 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        [subscriber sendNext:@"1"];
+        return nil;
+    }];
+    
+    RACSignal *s2 = [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            [subscriber sendNext:@"2"];
+        });
+        return nil;
+    }];
+    
+    //使用注意：几个信号，参数一的方法就几个参数，每个参数对应信号发出的数据。
+    NSLog(@"start___request");
+    [self rac_liftSelector:@selector(success:two:) withSignalsFromArray:@[s1,s2]];
+    
+}
+
+- (void)success:(id)data1 two:(id)data2{
+    NSLog(@"succes");
 
 }
+
+
+/**
+ RAC 对于 GCD 的封装
+ 
+ RACScheduler作为调度器,底层只是对GCD的简单封装,
+ 
+ subClass: immediateScheduler 仅仅是一个单例类，作为同步调度器
+ RACQueueScheduler 一个抽象类，在一个串行队列中实现异步调用。
+                   一般使用它的子类RACTargetQueueScheduler；
+ RACTargetQueueScheduler 继承于RACQueueScheduler，在一个串行队列中实现异步调用。
+ RACSubscriptionScheduler 一个用来调度订阅的调度器。底层生成了_backgroundScheduler，而
+                          _backgroundScheduler是通过RACTargetQueueScheduler生成的，因此RACSubscriptionScheduler 其实也是间接调用了RACTargetQueueScheduler。
+ */
+- (void)RACScheduler{
+  
+    NSLog(@"GCD ==============");
+
+    //???
+    [RACScheduler immediateScheduler];
+    
+    //主线程
+    [RACScheduler mainThreadScheduler];
+    
+    //下列三个方法创建了一个 get_global_queue
+    [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault];
+    [RACScheduler schedulerWithPriority:RACSchedulerPriorityDefault name:@"com.ReactiveObjC.test"];
+    [RACScheduler scheduler];
+    
+    
+    [RACScheduler currentScheduler];
+  
+}
+
+- (void)AFNetworking_RAC{
+    TwoViewController *two = [[TwoViewController alloc] init];
+    [self.navigationController pushViewController:two animated:YES];
+}
+
+- (void)LoginViewController{
+    
+   UIStoryboard *stroyboard =   [UIStoryboard storyboardWithName:@"Main" bundle:[NSBundle mainBundle]];
+    
+  LoginViewController *loginVC = [stroyboard instantiateViewControllerWithIdentifier:@"LoginVC"];
+ 
+   [self.navigationController pushViewController:loginVC animated:YES];
+}
+
+
+/**
+ 重复操作
+ */
+- (void)Retry{
+    
+    __block int failedCount = 0;
+    //创建信号
+    RACSignal *signal = [RACSignal createSignal:^RACDisposable *(id subscriber) {
+        if (failedCount < 10) {
+            failedCount++;
+            NSLog(@"我失败了");
+            //发送错误，才会要重试
+            [subscriber sendError:nil];
+        } else {
+            NSLog(@"经历了数百次失败后");
+            [subscriber sendNext:nil];
+        }
+        return nil;
+    }];
+    //重试
+    RACSignal *retrySignal = [signal retry];
+    //直到发送了Next玻璃球
+    [retrySignal subscribeNext:^(id x) {
+        NSLog(@"终于成功了");
+    }];
+    
+}
+
+
+/**
+ 节流 throttle
+ 当某个信号发送比较频繁时，可以使用节流，在某一段时间不发送信号内容，过了一段时间获取信号的最新内容发出。
+ 不接收任何信号内容，过了这个时间（1秒）获取最后发送的信号内容发出。
+ */
+- (void)throttle{
+    
+    RACSubject *subject = [RACSubject subject];
+    [[subject throttle:5] subscribeNext:^(id  _Nullable x) {
+        NSLog(@"success");
+    }];
+    
+    NSLog(@"start");
+    [subject sendNext:@"123"];
+    
+}
+
+
+/**
+ 重复播放
+ 普通的signal也可以被多次订阅, 增加 replay 的区别在于 下列 start & remove 操作 在replay 中只会当所有订阅者都执行完成后才会被释放,而普通 signal 每次订阅都会 remove & start 操作, 在于体验 可能和 RACReplaySubject 类似
+ 
+ */
+- (void)replay{
+    RACSignal *signal = [[RACSignal createSignal:^RACDisposable *(id<RACSubscriber> subscriber) {
+        NSLog(@"start");
+        [subscriber sendNext:@1];
+        [subscriber sendNext:@2];
+        
+        return [RACDisposable disposableWithBlock:^{
+            NSLog(@"remove");
+        }];
+    }] replay];
+    
+    [signal subscribeNext:^(id x) {
+        
+        NSLog(@"第一个订阅者%@",x);
+        
+    }];
+    
+    [signal subscribeNext:^(id x) {
+        
+        NSLog(@"第二个订阅者%@",x);
+        
+    }];
+}
+
+
 
 
 #pragma mark - tableview delegate & dataSource
