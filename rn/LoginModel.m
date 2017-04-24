@@ -27,7 +27,7 @@
     //reduce 用于信号发出的内容是元组，把信号发出元组的值聚合成一个值
     _enabledSignal = [RACSignal combineLatest:@[RACObserve(self, name),RACObserve(self, pwd)] reduce:^id(NSString *account,NSString *pwd){
         
-        return @(account.length > 6 && pwd.length > 6);
+        return @(account.length >= 6 && pwd.length >= 6);
         
     }];
     
