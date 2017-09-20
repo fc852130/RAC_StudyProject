@@ -314,7 +314,7 @@
         return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
            
             [subscriber sendNext:input];
-          //  [subscriber sendError:[[NSError alloc] initWithDomain:@"Qaq" code:100000000 userInfo:@{@"1":@"2"}]];
+           // [subscriber sendError:[[NSError alloc] initWithDomain:@"Qaq" code:100000000 userInfo:@{@"1":@"2"}]];
           
             //warning : 数据传输完毕,最好调用该方法,这时候才执行完毕
             [subscriber sendCompleted];
@@ -340,6 +340,10 @@
         NSLog(@"7.%@",x);
     }];
     
+    [command.errors subscribeNext:^(NSError * _Nullable x) {
+        NSLog(@"this is error");
+    }];
+    
     
     //监听命令是否执行完毕,默认会来一次,可以直接跳过, skip表示跳过第一次信号
     [[command.executing skip:1] subscribeNext:^(NSNumber * _Nullable x) {
@@ -361,6 +365,9 @@
     } error:^(NSError * _Nullable error) {
         NSLog(@"error boom !!!");
     }];
+    
+    
+    
     
 }
 
@@ -642,5 +649,29 @@
     SEL method = NSSelectorFromString(_dataArray[indexPath.row]);
     [self performSelector:method withObject:nil];
 }
+
+
+- (void)thisIsTestFunction{
+    UIImageView *imageView = [[UIImageView alloc] init];
+    UIButton *shareBtn = nil;
+    
+    RACSignal *imageSignal = [RACObserve(imageView, image) map:^id _Nullable(id  _Nullable value) {
+        return value? @YES : @NO;
+    }];
+    
+    shareBtn.rac_command = [[RACCommand alloc] initWithEnabled:imageSignal signalBlock:^RACSignal * _Nonnull(id  _Nullable input) {
+        return [RACSignal createSignal:^RACDisposable * _Nullable(id<RACSubscriber>  _Nonnull subscriber) {
+            return nil;
+        }];
+    }];
+    
+    RAC(shareBtn,enabled) = imageSignal;
+    
+}
+
+- (void)thisIsSecondTest{
+    
+}
+
 
 @end
