@@ -1,4 +1,4 @@
-# RAC_StudyProject
+# RAC_Study_Project
 ReactiveCocoa study demo
 
 
